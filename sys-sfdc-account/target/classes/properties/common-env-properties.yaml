@@ -1,0 +1,21 @@
+sfdccode: "SALESFORCE:CONNECTIVITY, SALESFORCE:TIMEOUT"
+
+http:
+ port: "8081" 
+ 
+email:
+  userName: "vishra0410@gmail.com"
+  passWord: "kvtqvsayrunczpij"
+  fromAddress: "vishra0410@gmail.com"
+  toAddress: "vishra0410@gmail.com"
+  host: "smtp.gmail.com"
+  port: "587"
+  subject: "error occured in xyz integration"
+
+
+apiName: "abc"
+apiVersion: "1234"
+
+retry:
+ count: "3"
+ interval: "1000"

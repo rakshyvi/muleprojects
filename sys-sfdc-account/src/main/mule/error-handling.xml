@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+	<error-handler name="global-error-handler" doc:id="eb7080b7-ee09-4f7b-adff-7d17e46fd0a4" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="80f8e9e3-003f-4006-a294-0be01e5147e7" >
+			<flow-ref doc:name="common-failure-response" doc:id="20adb6af-99cc-4dc5-932f-9c0b66cb0641" name="common-failure-response"/>
+			<flow-ref doc:name="Email-subflow" doc:id="73a95c38-72c1-498e-b9e6-c72ff5c0c254" name="Email-subflow"/>
+		</on-error-continue>
+	</error-handler>
+</mule>

@@ -1,0 +1,9 @@
+api:
+ autodiscoveryid: "18332032"
+   
+sfdc:
+ username: "rak@companyforce.com"
+ loginUrl: "https://login.salesforce.com/services/Soap/u/55.0" 
+ query: 
+   get-account: "select BillingAddress,BillingCity,BillingCountry,BillingPostalCode,BillingState,Email__c,Id,LastModifiedDate,Name,Phone,ShippingAddress,ShippingCity,ShippingCountry,ShippingPostalCode,ShippingState,ShippingStreet,Active__c,OwnerId,ExternalAccountId__c FROM Account where lastModifiedDate >"
+   user-account: "select Email,Id,Name,Phone,Username FROM User where Username"      
