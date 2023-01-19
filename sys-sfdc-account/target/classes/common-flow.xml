@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+	<sub-flow name="common-sucess-response" doc:id="042da122-348f-4ba6-a378-c4618c46e2f3" >
+		<ee:transform doc:name="Transform Message" doc:id="92220060-8635-49e3-926c-26db7a0b3281" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  trackingId: correlationId,
+  timeStamp: now() >> "UTC",
+  apiName: Mule::P('apiName'),
+  apiVersion: Mule::p('apiVersion'),
+   date: payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="common-failure-response" doc:id="a39e8fae-a59b-4102-9f51-3e0907f1eff9" >
+		<ee:transform doc:name="Transform Message" doc:id="5e6a406d-4cfb-49e6-8b8e-fc528fdbf151" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  trackingId: correlationId,
+  timeStamp: now() >> "UTC",
+  apiName: Mule::P('apiName'),
+  apiVersion: Mule::p('apiVersion'),
+  errorCode: "ITSERVICELAYER_ERROR",
+  error: error,
+  date: payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="sfdc-query-subflow" doc:id="4329aca1-451b-46a1-8882-b47e493ebaa9" >
+		<until-successful maxRetries="${retry.count}" doc:name="Retry" doc:id="e68304ba-3392-43ba-a208-d17c823a1606" millisBetweenRetries="${retry.interval}">
+			<try doc:name="Try" doc:id="f94ca305-078d-406d-98af-9b1629610b70">
+			    <salesforce:query doc:name="Query" doc:id="39c77a44-7762-484a-bf8c-8bf61efe04fe" config-ref="Salesforce_Config">
+					<salesforce:salesforce-query ><![CDATA[#[vars.queryObject]]]></salesforce:salesforce-query>
+				</salesforce:query>
+				<logger level="INFO" doc:name="Logger" doc:id="5a269474-9573-4bc9-9fc5-8ebf447e846b" message="#[%dw 2.0&#10;output application/json&#10;---&#10;payload]"/>
+				<ee:transform doc:name="Transform Message" doc:id="5abbdb24-56cd-45b5-b1c3-a06958bdbaef">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+				<error-handler >
+					<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="54525ec7-7815-40ba-b309-783b2e8735d7" type="SALESFORCE:CONNECTIVITY, SALESFORCE:TIMEOUT">
+						<logger level="INFO" doc:name="Logger" doc:id="cb85a8de-ba31-4876-8813-785bbd66f70a" message="#[error]"/>
+					</on-error-propagate>
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="9423f7a5-6d75-43a4-ab3f-dec263ed8858" type="ANY">
+						<logger level="INFO" doc:name="Logger" doc:id="d1f914fc-d5aa-465a-b7da-371272943da4" message="#[error]"/>
+					</on-error-continue>
+				</error-handler>
+		</try>
+		</until-successful>
+	</sub-flow>
+	<sub-flow name="Email-subflow" doc:id="bd8c4a57-ea92-4d3f-a1cb-89f531fc13ed" >
+		<email:send doc:name="Send" doc:id="0ec42293-f3e0-4e12-aa02-1f2fca8c8ced" config-ref="Email_SMTP" fromAddress="${email.fromAddress}" subject="${email.subject}" >
+			<email:to-addresses >
+				<email:to-address value="${email.toAddress}" />
+			</email:to-addresses>
+			<email:bcc-addresses />
+			<email:body contentType="text/html" />
+		</email:send>
+	</sub-flow>
+</mule>

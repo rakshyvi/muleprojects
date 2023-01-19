@@ -1,0 +1,23 @@
+200-success:
+    sfdcQueryCalls: "1"
+    errorType: ""
+    errorCode: ""
+    attributes: "getuser/getuser-attributes.json"
+
+400-BadRequest:
+    sfdcQueryCalls: "1"
+    errorType: ""
+    errorCode: ""
+    attributes: "getuser/getuser-attributes.json"
+
+503-serviceunavailable:
+    errorType: "MULE:RETRY_EXHAUSTED,SALESFORCE:CONNECTIVITY"
+    errorCode: ""
+    sfdcQueryCalls: "1"
+    attributes: "getuser/getuser-attributes.json"
+    
+500-internalerror:
+    errorType: "MULE:RETRY_EXHAUSTED,SALESFORCE:CONNECTIVITY"
+    errorCode: ""
+    sfdcQueryCalls: "1"
+    attributes: "getuser/getuser-attributes.json"
