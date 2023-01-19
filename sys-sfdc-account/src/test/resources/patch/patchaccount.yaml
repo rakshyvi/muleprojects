@@ -1,0 +1,23 @@
+200-success:
+    sfdcUpsertCalls: "1"
+    errorType: ""
+    errorCode: ""
+    attributes: "patchaccount"
+
+400-BadRequest:
+    sfdcUpsertCalls: "1"
+    errorType: ""
+    errorCode: ""
+    attributes: "patchaccount"
+
+503-serviceunavailable:
+    errorType: "SALESFORCE:CONNECTIVITY,MULE:RETRY_EXHAUSTED"
+    errorCode: ""
+    sfdcUpsertCalls: "1"
+    attributes: "patchaccount"
+    
+500-internalerror:
+    errorType: "MULE:RETRY_EXHAUSTED,SALESFORCE:CONNECTIVITY"
+    errorCode: ""
+    sfdcUpsertCalls: "1"
+    attributes: "patchaccount"
